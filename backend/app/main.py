@@ -22,8 +22,8 @@ log = logging.getLogger("rivojlanish")
 
 
 def check_config() -> None:
-    if settings.web_url.startswith("https://") and settings.secret_key in ("", "change-me"):
-        raise RuntimeError("SECRET_KEY sozlanmagan — .env faylida uzun tasodifiy qiymat bering")
+    if len(settings.secret_key) < 32:
+        raise RuntimeError("SECRET_KEY juda qisqa — kamida 32 belgi bo'lsin yoki bo'sh qoldiring")
 
 
 @asynccontextmanager

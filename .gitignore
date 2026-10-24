@@ -23,3 +23,6 @@ frontend/tsconfig.tsbuildinfo
 Thumbs.db
 .idea/
 .vscode/
+
+# Server ma'lumotlari (SQLite baza, avtomatik maxfiy kalit)
+backend/data/

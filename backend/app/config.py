@@ -1,32 +1,45 @@
 """Barcha sozlamalar .env faylidan o'qiladi."""
+import hashlib
+import hmac
+import os
+import secrets
 from functools import lru_cache
+from pathlib import Path
 from typing import List
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
 _bot_username_cache = None
+
+# backend/ papkasi — .env, baza va maxfiy kalit shu yerda (joriy papkaga bog'liq emas)
+BACKEND_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = BACKEND_DIR / "data"
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=str(BACKEND_DIR / ".env"), env_file_encoding="utf-8", extra="ignore"
+    )
 
     app_name: str = "Rivojlanish AI"
     # Saytning to'liq manzili, masalan https://rivojlanish-ai.uz
     web_url: str = "http://localhost:5173"
 
     # Ma'lumotlar bazasi. Hostingda: mysql+pymysql://user:parol@localhost/baza_nomi
-    database_url: str = "sqlite:///./rivojlanish.db"
+    # Bo'sh bo'lsa: backend/data/rivojlanish.db (SQLite)
+    database_url: str = ""
 
     # Xavfsizlik
-    secret_key: str = "change-me"
+    # Bo'sh bo'lsa avtomatik yaratiladi va backend/data/secret.key da saqlanadi
+    secret_key: str = ""
     jwt_days: int = 30
 
     # Telegram
     telegram_bot_token: str = ""
     telegram_bot_username: str = ""
     # Webhook so'rovlarini tekshirish uchun maxfiy so'z
-    telegram_webhook_secret: str = "change-me-too"
+    # Bo'sh bo'lsa SECRET_KEY dan hosil qilinadi
+    telegram_webhook_secret: str = ""
 
     # Google
     google_client_id: str = ""
@@ -58,6 +71,17 @@ class Settings(BaseSettings):
     # Cron skriptlarini HTTP orqali chaqirish uchun kalit (ixtiyoriy)
     cron_key: str = ""
 
+    def model_post_init(self, __context) -> None:
+        if not self.database_url:
+            DATA_DIR.mkdir(parents=True, exist_ok=True)
+            self.database_url = f"sqlite:///{DATA_DIR / 'rivojlanish.db'}"
+        if not self.secret_key or self.secret_key == "change-me":
+            self.secret_key = _load_or_create_secret()
+        if not self.telegram_webhook_secret or self.telegram_webhook_secret == "change-me-too":
+            self.telegram_webhook_secret = hmac.new(
+                self.secret_key.encode(), b"telegram-webhook", hashlib.sha256
+            ).hexdigest()[:48]
+
     def _split(self, value: str) -> List[str]:
         return [v.strip().lower() for v in value.split(",") if v.strip()]
 
@@ -84,6 +108,24 @@ class Settings(BaseSettings):
     @property
     def admin_telegram_list(self) -> List[str]:
         return self._split(self.admin_telegram_ids)
+
+
+def _load_or_create_secret() -> str:
+    """Server o'zi yaratgan, hech kimga ko'rsatilmaydigan maxfiy kalit."""
+    path = DATA_DIR / "secret.key"
+    try:
+        if path.exists():
+            value = path.read_text().strip()
+            if len(value) >= 32:
+                return value
+        DATA_DIR.mkdir(parents=True, exist_ok=True)
+        value = secrets.token_hex(32)
+        path.write_text(value)
+        os.chmod(path, 0o600)
+        return value
+    except OSError:
+        # Yozib bo'lmasa ham ishlasin (faqat test/vaqtinchalik muhit)
+        return secrets.token_hex(32)
 
 
 @lru_cache

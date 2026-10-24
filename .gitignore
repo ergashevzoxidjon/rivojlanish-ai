@@ -1,0 +1,25 @@
+# Maxfiy sozlamalar — hech qachon GitHub'ga yuklanmaydi
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+*.db
+*.sqlite3
+
+# Node
+frontend/node_modules/
+frontend/*.tsbuildinfo
+frontend/tsconfig.tsbuildinfo
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

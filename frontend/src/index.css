@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Rang tokenlari (RGB). Telegram ichida initTelegram() ularni mavzu ranglari bilan almashtiradi. */
+:root {
+  --bg: 246 246 251;
+  --surface: 255 255 255;
+  --elevated: 250 250 253;
+  --line: 229 229 238;
+  --ink: 22 22 34;
+  --muted: 110 112 130;
+  --accent: 109 93 252;
+  --accent-ink: 255 255 255;
+  --good: 22 163 122;
+  --warn: 217 140 18;
+  --bad: 220 60 72;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not(.tg) {
+    --bg: 13 13 20;
+    --surface: 22 22 32;
+    --elevated: 29 29 42;
+    --line: 44 44 60;
+    --ink: 236 236 245;
+    --muted: 150 152 172;
+    --accent: 139 125 255;
+    --good: 52 201 155;
+    --warn: 240 170 60;
+    --bad: 248 100 110;
+    color-scheme: dark;
+  }
+}
+
+:root.dark {
+  --bg: 13 13 20;
+  --surface: 22 22 32;
+  --elevated: 29 29 42;
+  --line: 44 44 60;
+  --ink: 236 236 245;
+  --muted: 150 152 172;
+  --accent: 139 125 255;
+  --good: 52 201 155;
+  --warn: 240 170 60;
+  --bad: 248 100 110;
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: rgb(var(--bg));
+  color: rgb(var(--ink));
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  min-height: 100dvh;
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-line bg-surface shadow-card;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition
+      active:scale-[.98] disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-accent text-accent-ink hover:brightness-110;
+  }
+  .btn-ghost {
+    @apply btn border border-line bg-surface text-ink hover:bg-elevated;
+  }
+  .btn-soft {
+    @apply btn bg-accent/10 text-accent hover:bg-accent/15;
+  }
+  .input {
+    @apply w-full rounded-xl border border-line bg-surface px-3.5 py-2.5 text-sm text-ink outline-none transition
+      placeholder:text-muted focus:border-accent focus:ring-2 focus:ring-accent/20;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full border border-line bg-surface px-3 py-1.5 text-xs font-medium text-muted
+      transition hover:text-ink;
+  }
+  .chip-on {
+    @apply border-accent bg-accent/10 text-accent;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full bg-elevated px-2 py-0.5 text-[11px] font-medium text-muted;
+  }
+  .label {
+    @apply mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted;
+  }
+}
+
+/* Dars matni */
+.lesson-prose {
+  @apply prose max-w-none prose-headings:font-bold prose-headings:text-ink prose-p:text-ink/90 prose-li:text-ink/90
+    prose-strong:text-ink prose-a:text-accent prose-code:rounded prose-code:bg-elevated prose-code:px-1.5 prose-code:py-0.5
+    prose-code:font-medium prose-code:text-ink prose-code:before:content-none prose-code:after:content-none
+    prose-pre:rounded-xl prose-pre:bg-[#14141f] prose-pre:text-[#e9e9f5] prose-th:text-ink prose-td:text-ink/90
+    prose-hr:border-line prose-blockquote:border-accent prose-blockquote:text-ink/80;
+}
+.lesson-prose pre code {
+  @apply bg-transparent p-0 text-inherit;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  scrollbar-width: none;
+}
+
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 0.5rem);
+}

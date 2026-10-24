@@ -202,6 +202,9 @@ def save_lesson(
 def process_new_items(db: Session, limit: Optional[int] = None) -> List[Lesson]:
     """Yangi xom elementlarni AI orqali baholab, foydalilarini darsga aylantiradi."""
     limit = limit or settings.collect_max_items
+    if not settings.anthropic_api_key:
+        # Kalit qo'yilmaguncha yangiliklar "new" holatida kutib turadi (yo'qolmaydi)
+        return []
     items = db.scalars(
         select(RawItem)
         .where(RawItem.status == "new")

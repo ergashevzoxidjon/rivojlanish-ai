@@ -14,6 +14,7 @@ os.environ.update(
         "ADMIN_EMAILS": "admin@example.com",
         "GOOGLE_CLIENT_ID": "test-client",
         "CRON_KEY": "cronkey",
+        "ANTHROPIC_API_KEY": "test-key",
     }
 )
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

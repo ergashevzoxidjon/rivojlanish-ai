@@ -5,6 +5,7 @@ import { PageLoader } from "./components/ui";
 import { useAuth } from "./lib/auth";
 import { isTelegram } from "./lib/telegram";
 import Landing from "./pages/Landing";
+import { Privacy, Terms } from "./pages/Legal";
 import LessonPage from "./pages/LessonPage";
 import Lessons from "./pages/Lessons";
 import NeedRegistration from "./pages/NeedRegistration";
@@ -48,6 +49,8 @@ export default function App() {
   return (
     <Routes>
       <Route path="/register" element={<Register />} />
+      <Route path="/privacy" element={<Privacy />} />
+      <Route path="/terms" element={<Terms />} />
       {!user ? (
         <Route path="*" element={isTelegram ? <TelegramAuthFailed /> : <Landing />} />
       ) : !user.registered ? (

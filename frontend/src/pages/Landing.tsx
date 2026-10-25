@@ -58,7 +58,14 @@ export default function Landing() {
       </section>
 
       <footer className="border-t border-line py-6 text-center text-xs text-muted">
-        © {new Date().getFullYear()} Rivojlanish AI
+        © {new Date().getFullYear()} Rivojlanish AI ·{" "}
+        <a href="/privacy" className="hover:text-ink">
+          Maxfiylik siyosati
+        </a>{" "}
+        ·{" "}
+        <a href="/terms" className="hover:text-ink">
+          Foydalanish shartlari
+        </a>
       </footer>
     </div>
   );
